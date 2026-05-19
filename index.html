@@ -130,8 +130,25 @@
         for (let v = 0; v <= 18; v += 0.1) { const i = k * Math.pow(v, alpha); v === 0 ? ctx.moveTo(toScreenX(v, width), toScreenY(i, height)) : ctx.lineTo(toScreenX(v, width), toScreenY(i, height)); }
         ctx.stroke();
 
+// Groene lijn (gestippeld)
         ctx.strokeStyle = '#2ca02c'; ctx.setLineDash([4, 4]); ctx.beginPath();
-        for (let v = 0; v <= 18; v += 0.1) { const i = 2 * k * Math.pow(Math.max(0, 18 - v), alpha); v === 0 ? ctx.moveTo(toScreenX(v, width), toScreenY(i, height)) : ctx.lineTo(toScreenX(v, width), toScreenY(i, height)); }
+        let first = true;
+        for (let v = 0; v <= 18; v += 0.1) {
+            const i = 2 * k * Math.pow(Math.max(0, 18 - v), alpha);
+            
+            // Teken alleen als de waarde binnen de grafiekhoogte valt
+            if (i >= 0 && i <= 0.4) {
+                if (first) {
+                    ctx.moveTo(toScreenX(v, width), toScreenY(i, height));
+                    first = false;
+                } else {
+                    ctx.lineTo(toScreenX(v, width), toScreenY(i, height));
+                }
+            } else {
+                // Zodra de waarde buiten bereik komt, 'reset' de lijn zodat hij niet doortrekt
+                first = true;
+            }
+        }
         ctx.stroke();
 
         ctx.strokeStyle = '#ff7f0e'; ctx.setLineDash([4, 4]); ctx.beginPath(); // Oranje nu ook gestippeld
