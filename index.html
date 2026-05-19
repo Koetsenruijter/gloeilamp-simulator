@@ -86,8 +86,8 @@
     const xMin = 0, xMax = 18;
     const yMin = 0, yMax = 0.4;
 
-    function toScreenX(x, width) { const padding = 40; return padding + (x - xMin) / (xMax - xMin) * (width - padding * 1.5); }
-    function toScreenY(y, height) { const padding = 30; return height - padding - (y - yMin) / (yMax - yMin) * (height - padding * 2); }
+    function toScreenX(x, width) { const padding = 60; return padding + (x - xMin) / (xMax - xMin) * (width - padding * 1.5); }
+    function toScreenY(y, height) { const padding = 50; return height - padding - (y - yMin) / (yMax - yMin) * (height - padding * 2); }
 
     function updateSimulation() {
         const alpha = parseFloat(slider.value);
