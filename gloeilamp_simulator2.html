@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactieve I/U Karakteristiek Simulator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 650px;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .circuit-diagram {
+            display: flex;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            margin-bottom: 20px;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .slider-section {
+            background: #f9f9fb;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .slider-container input {
+            flex: 1;
+            margin: 0 15px;
+        }
+        .slider-label {
+            font-weight: bold;
+            font-size: 1rem;
+            min-width: 90px;
+        }
+        .slider-value {
+            font-variant-numeric: tabular-nums;
+            font-weight: bold;
+            min-width: 45px;
+            text-align: right;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .metric-card {
+            background: #f5f5f7;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #ccc;
+        }
+        .metric-card.l3 { border-left-color: #2ca02c; }
+        .metric-card.l12 { border-left-color: #ff7f0e; }
+        .metric-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+        }
+        .conclusion-box {
+            background: #eef7ff;
+            border: 1px solid #bce0ff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            text-align: center;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>I/U Karakteristiek & Evenwicht (3 Lampen, 18V)</h2>
+    
+    <div class="circuit-diagram">
+        <svg width="320" height="160" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+            <line x1="160" y1="20" x2="150" y2="20" stroke="black" stroke-width="2"/>
+            <line x1="155" y1="12" x2="155" y2="28" stroke="black" stroke-width="3"/>
+            <line x1="165" y1="15" x2="165" y2="25" stroke="black" stroke-width="1.5"/>
+            <text x="175" y="24" font-family="sans-serif" font-size="12" font-weight="bold">18 V</text>
+            
+            <polyline points="150,20 40,20 40,95 70,95" fill="none" stroke="black" stroke-width="1.5"/>
+            <polyline points="165,20 280,20 280,95 230,95" fill="none" stroke="black" stroke-width="1.5"/>
+            
+            <polyline points="70,95 70,60 100,60" fill="none" stroke="black" stroke-width="1.5"/>
+            <polyline points="70,95 70,130 100,130" fill="none" stroke="black" stroke-width="1.5"/>
+            <polyline points="130,60 160,60 160,95 180,95" fill="none" stroke="black" stroke-width="1.5"/>
+            <polyline points="130,130 160,130 160,95" fill="none" stroke="black" stroke-width="1.5"/>
+            
+            <circle cx="115" cy="60" r="15" fill="none" stroke="black" stroke-width="1.5"/>
+            <line x1="104.4" y1="49.4" x2="125.6" y2="70.6" stroke="black" stroke-width="1.5"/>
+            <line x1="104.4" y1="70.6" x2="125.6" y2="49.4" stroke="black" stroke-width="1.5"/>
+            <text x="110" y="38" font-family="sans-serif" font-size="13" font-style="italic" font-weight="bold">L₁</text>
+            
+            <circle cx="115" cy="130" r="15" fill="none" stroke="black" stroke-width="1.5"/>
+            <line x1="104.4" y1="119.4" x2="125.6" y2="140.6" stroke="black" stroke-width="1.5"/>
+            <line x1="104.4" y1="140.6" x2="125.6" y2="119.4" stroke="black" stroke-width="1.5"/>
+            <text x="110" y="156" font-family="sans-serif" font-size="13" font-style="italic" font-weight="bold">L₂</text>
+            
+            <circle cx="205" cy="95" r="15" fill="none" stroke="black" stroke-width="1.5"/>
+            <line x1="194.4" y1="84.4" x2="215.6" y2="105.6" stroke="black" stroke-width="1.5"/>
+            <line x1="194.4" y1="105.6" x2="215.6" y2="84.4" stroke="black" stroke-width="1.5"/>
+            <text x="200" y="123" font-family="sans-serif" font-size="13" font-style="italic" font-weight="bold">L₃</text>
+        </svg>
+    </div>
+    
+    <div class="canvas-container">
+        <canvas id="graphCanvas"></canvas>
+    </div>
+    
+    <div class="slider-section">
+        <div class="slider-container">
+            <span class="slider-label">Factor α:</span>
+            <input type="range" id="alphaSlider" min="0.3" max="1.2" step="0.05" value="0.55">
+            <span class="slider-value" id="alphaVal">0.55</span>
+        </div>
+    </div>
+    
+    <div class="metrics-grid">
+        <div class="metric-card l3">
+            <div class="metric-label">Lamp L3 (Serie)</div>
+            <div class="metric-value" id="metricsL3">-</div>
+        </div>
+        <div class="metric-card l12">
+            <div class="metric-label">Lamp L1 / L2 (Parallel, elk)</div>
+            <div class="metric-value" id="metricsL12">-</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Vermogen L3 (P₃)</div>
+            <div class="metric-value" id="powerL3">-</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Weerstandsverhouding (R₃ / R₁₂)</div>
+            <div class="metric-value" id="resRatio">-</div>
+        </div>
+    </div>
+    
+    <div class="conclusion-box" id="conclusionText">-</div>
+</div>
+
+<script>
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+    const slider = document.getElementById('alphaSlider');
+    const alphaVal = document.getElementById('alphaVal');
+
+    const V_tot = 18;
+    const V_nom = 12;
+    const I_nom = 0.2;
+
+    function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    const xMin = 0, xMax = 18;
+    const yMin = 0, yMax = 0.4;
+
+    function toScreenX(x, width) {
+        const padding = 40;
+        return padding + (x - xMin) / (xMax - xMin) * (width - padding * 1.5);
+    }
+
+    function toScreenY(y, height) {
+        const padding = 30;
+        return height - padding - (y - yMin) / (yMax - yMin) * (height - padding * 2);
+    }
+
+    function updateSimulation() {
+        const alpha = parseFloat(slider.value);
+        alphaVal.innerText = alpha.toFixed(2);
+
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        ctx.clearRect(0, 0, width, height);
+
+        const k = I_nom / Math.pow(V_nom, alpha);
+        
+        const V3_eq = V_tot / (1 + Math.pow(0.5, 1 / alpha));
+        const I3_eq = k * Math.pow(V3_eq, alpha);
+        
+        const V12_eq = V_tot - V3_eq;
+        const I12_eq = I3_eq / 2;
+
+        const P3 = V3_eq * I3_eq;
+        const R3 = V3_eq / I3_eq;
+        const R12 = V12_eq / I12_eq;
+        const ratio = R3 / R12;
+
+        ctx.strokeStyle = '#e5e5e5';
+        ctx.lineWidth = 1;
+        ctx.font = '10px sans-serif';
+        ctx.fillStyle = '#666';
+
+        for (let v = 0; v <= 18; v += 3) {
+            const sx = toScreenX(v, width);
+            ctx.beginPath();
+            ctx.moveTo(sx, toScreenY(0, height));
+            ctx.lineTo(sx, toScreenY(0.4, height));
+            ctx.strokeStyle = (v === 6 || v === 12) ? '#ccc' : '#eaeaea';
+            ctx.lineWidth = (v === 6 || v === 12) ? 1.5 : 1;
+            ctx.stroke();
+            ctx.fillText(v + 'V', sx - 6, toScreenY(0, height) + 15);
+        }
+
+        for (let i = 0; i <= 0.4; i += 0.1) {
+            const sy = toScreenY(i, height);
+            ctx.beginPath();
+            ctx.moveTo(toScreenX(0, width), sy);
+            ctx.lineTo(toScreenX(18, width), sy);
+            ctx.strokeStyle = '#eaeaea';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.fillText(i.toFixed(1) + 'A', toScreenX(0, width) - 30, sy + 4);
+        }
+
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(0, width), toScreenY(0, height));
+        ctx.lineTo(toScreenX(18, width), toScreenY(0, height));
+        ctx.moveTo(toScreenX(0, width), toScreenY(0, height));
+        ctx.lineTo(toScreenX(0, width), toScreenY(0.4, height));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#007aff';
+        ctx.lineWidth = 2.5;
+        for (let v = 0; v <= 18; v += 0.1) {
+            const i = k * Math.pow(v, alpha);
+            if (v === 0) ctx.moveTo(toScreenX(v, width), toScreenY(i, height));
+            else ctx.lineTo(toScreenX(v, width), toScreenY(i, height));
+        }
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#2ca02c';
+        ctx.setLineDash([4, 4]);
+        for (let v = 0; v <= 18; v += 0.1) {
+            const i = 2 * k * Math.pow(Math.max(0, 18 - v), alpha);
+            if (v === 0) ctx.moveTo(toScreenX(v, width), toScreenY(i, height));
+            else ctx.lineTo(toScreenX(v, width), toScreenY(i, height));
+        }
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#ff7f0e';
+        for (let v = 0; v <= 18; v += 0.1) {
+            const i = 0.5 * k * Math.pow(Math.max(0, 18 - v), alpha);
+            if (v === 0) ctx.moveTo(toScreenX(v, width), toScreenY(i, height));
+            else ctx.lineTo(toScreenX(v, width), toScreenY(i, height));
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        function drawDot(x, y, color, radius = 5) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(toScreenX(x, width), toScreenY(y, height), radius, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        drawDot(12, 0.2, '#d62728', 5);
+        drawDot(6, 0.1, '#9467bd', 5);
+        drawDot(V3_eq, I3_eq, '#2ca02c', 4);
+        drawDot(V12_eq, I12_eq, '#ff7f0e', 4);
+
+        document.getElementById('metricsL3').innerText = `${V3_eq.toFixed(2)} V / ${I3_eq.toFixed(3)} A`;
+        document.getElementById('metricsL12').innerText = `${V12_eq.toFixed(2)} V / ${I12_eq.toFixed(3)} A`;
+        document.getElementById('powerL3').innerText = `${P3.toFixed(2)} W`;
+        document.getElementById('resRatio').innerText = `${ratio.toFixed(2)} (R₃=${R3.toFixed(0)}Ω / R₁₂=${R12.toFixed(0)}Ω)`;
+
+        const concBox = document.getElementById('conclusionText');
+        if (alpha < 0.95) {
+            concBox.innerText = `Conclusie (α = ${alpha}): Duidelijk PTC-gedrag. Omdat de parallellampjes (L1/L2) kouder blijven, hebben ze een lagere weerstand en verschuift het evenwicht: L3 krijgt meer spanning (${V3_eq.toFixed(1)}V) en L1/L2 krijgen juist minder spanning (${V12_eq.toFixed(1)}V) dan de nominale 12V en 6V!`;
+            concBox.style.background = '#eef7ff';
+            concBox.style.borderColor = '#bce0ff';
+        } else if (alpha > 1.05) {
+            concBox.innerText = `Conclusie (α = ${alpha}): NTC-gedrag. De weerstand daalt bij belasting, waardoor de spanningsverhoudingen omkeren ten opzichte van een normale gloeilamp.`;
+            concBox.style.background = '#fff1f1';
+            concBox.style.borderColor = '#ffcccc';
+        } else {
+            concBox.innerText = `Conclusie (α = ${alpha}): Lineair (Ohms) gedrag. De evenwichtspunten vallen nu exact samen met de nominale werkpunten (6V/0.1A en 12V/0.2A).`;
+            concBox.style.background = '#f4fbf4';
+            concBox.style.borderColor = '#ccdfcc';
+        }
+    }
+
+    slider.addEventListener('input', updateSimulation);
+    window.addEventListener('resize', () => { resizeCanvas(); updateSimulation(); });
+
+    resizeCanvas();
+    updateSimulation();
+</script>
+
+</body>
+</html>
